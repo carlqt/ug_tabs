@@ -13,7 +13,8 @@ results = page.css('.tresults').first.css('tr')
 match = results.select do |doc|
   begin
     doc.css('.song').attributes["class"].value == "song"
-  rescue NoMethodError
+  rescue NoMethodError => err 
+    binding.pry
   end
 end
 
