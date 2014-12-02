@@ -47,23 +47,26 @@ begin
     chords_or_tabs?(result) && matched_title?(result, song_title)
   end
 
+  new_page = Nokogiri::HTML matched_titles.columnize
+
   # song_match = matched_titles.select do |match|
 
   # end
 
-  matched
-
-  highest_rated_matched = matched_titles.map do |match|
-
-    # views = match.css('.ratdig').text.to_i
-    # if !match.css('.rating').empty?
-    #   rating = rating[match.css('.rating').last.child["class"]]
-    # else
-    #   rating = 0
-    # end
+  highest_rated = if new_page.css('.r_5')
+    new_page.css('.r_5')
+  else
+    if new_page.css('.r_4')
+      new_page.css('.r_4')
+    else
+      if new_page.css('.r_3')
+        new_page.css('.r_3')
+      end
+    end
   end
 
 rescue LoadError => e
+  puts "#{e.message} gem not found... Installing"
   load_missing_gem e.message.split.last
   retry
 end
