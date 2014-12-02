@@ -1,33 +1,62 @@
-require 'rubygems'
-require 'nokogiri'
-require 'open-uri'
-require 'sanitize'
 require 'pry'
+def load_gem(name, version=nil)
+  # needed if your ruby version is less than 1.9
 
-song_title = ARGV[0]
-value = song_title.gsub(' ','+')
+  begin
+    gem name, version
+  rescue LoadError
+    version = "--version '#{version}'" unless version.nil?
+    system("gem install #{name} #{version}")
+    Gem.clear_paths
+    retry
+  end
 
-url = "http://www.ultimate-guitar.com/search.php?search_type=title&value=#{value}"
-page = Nokogiri::HTML open(url, 'User-Agent' => 'chrome')
-results_row = page.css('.tresults').first.css('tr')
-
-matched_titles = results_row.select do |result|
-  chords_or_tabs?(result) && matched_title?(result) && max_rating?(result)
+  require name
 end
 
-binding.pry
+begin
+  require 'rubygems'
+  require 'nokogiri'
+  require 'open-uri'
+  require 'sanitize'
 
-def matched_title?(result)
-  result.css('.song').last.attributes["class"].value == "song"
+  def matched_title?(result, title)
+    return false if result.css('.song').empty?
+    result.css('.song').last.attributes["class"].value == "song" && result.css('.song').last.text.downcase.match(title)
+  end
+
+  def max_rating?(result)
+    # return false if result.css('.song').empty
+   !result.css('.r_5').empty?
+  end
+
+  def chords_or_tabs?(result)
+    return false if result.css('td strong').empty?
+    %w(chords tab).include? result.css('td strong').last.text.downcase
+  end
+
+  song_title = ARGV[0]
+  value = song_title.gsub(' ','+')
+
+  url = "http://www.ultimate-guitar.com/search.php?search_type=title&value=#{value}"
+  page = Nokogiri::HTML open(url, 'User-Agent' => 'chrome')
+  results_row = page.css('.tresults').first.css('tr')
+
+  matched_titles = results_row.select do |result|
+    chords_or_tabs?(result) && matched_title?(result, song_title)
+  end
+  binding.pry
+
+  # song_match = matched_titles.select do |match|
+
+  # end
+rescue LoadError => e
+  # binding.pry
+  puts e
+  load_gem e.message.split.last
 end
 
-def max_rating?(result)
- !result.css('.r_5').empty?
-end
 
-def chords_or_tabs?(result)
-  %w(chords tab).include? result.css('td strong').last.text.downcase
-end
 
 # tabs = doc.css('.tb_ct pre')[2].to_s
 
