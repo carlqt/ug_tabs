@@ -1,5 +1,5 @@
 require 'pry'
-def load_gem(name, version=nil)
+def load_missing_gem(name, version=nil)
   # needed if your ruby version is less than 1.9
 
   begin
@@ -11,7 +11,7 @@ def load_gem(name, version=nil)
     retry
   end
 
-  require name
+  # require name
 end
 
 begin
@@ -37,6 +37,7 @@ begin
 
   song_title = ARGV[0]
   value = song_title.gsub(' ','+')
+  rating_hash = { "r_1" => 1, "r_2" => 2, "r_3" => 3, "r_4" => 4, "r_5" => 5 }
 
   url = "http://www.ultimate-guitar.com/search.php?search_type=title&value=#{value}"
   page = Nokogiri::HTML open(url, 'User-Agent' => 'chrome')
@@ -45,15 +46,26 @@ begin
   matched_titles = results_row.select do |result|
     chords_or_tabs?(result) && matched_title?(result, song_title)
   end
-  binding.pry
 
   # song_match = matched_titles.select do |match|
 
   # end
+
+  matched
+
+  highest_rated_matched = matched_titles.map do |match|
+
+    # views = match.css('.ratdig').text.to_i
+    # if !match.css('.rating').empty?
+    #   rating = rating[match.css('.rating').last.child["class"]]
+    # else
+    #   rating = 0
+    # end
+  end
+
 rescue LoadError => e
-  # binding.pry
-  puts e
-  load_gem e.message.split.last
+  load_missing_gem e.message.split.last
+  retry
 end
 
 
