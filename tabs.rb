@@ -4,21 +4,30 @@ require 'open-uri'
 require 'sanitize'
 require 'pry'
 
-song_title = ARGV[0].gsub(' ','+')
+song_title = ARGV[0]
+value = song_title.gsub(' ','+')
 
-url = "http://www.ultimate-guitar.com/search.php?search_type=title&value=#{song_title}"
+url = "http://www.ultimate-guitar.com/search.php?search_type=title&value=#{value}"
 page = Nokogiri::HTML open(url, 'User-Agent' => 'chrome')
-results = page.css('.tresults').first.css('tr')
+results_row = page.css('.tresults').first.css('tr')
 
-match = results.select do |doc|
-  begin
-    doc.css('.song').attributes["class"].value == "song"
-  rescue NoMethodError => err 
-    binding.pry
-  end
+matched_titles = results_row.select do |result|
+  chords_or_tabs?(result) && matched_title?(result) && max_rating?(result)
 end
 
 binding.pry
+
+def matched_title?(result)
+  result.css('.song').last.attributes["class"].value == "song"
+end
+
+def max_rating?(result)
+ !result.css('.r_5').empty?
+end
+
+def chords_or_tabs?(result)
+  %w(chords tab).include? result.css('td strong').last.text.downcase
+end
 
 # tabs = doc.css('.tb_ct pre')[2].to_s
 
