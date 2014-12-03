@@ -53,13 +53,14 @@ begin
 
   # end
 
-  highest_rated = if new_page.css('.r_5')
+
+  highest_rated = if !new_page.css('.r_5').empty?
     new_page.css('.r_5')
   else
-    if new_page.css('.r_4')
+    if !new_page.css('.r_4').empty?
       new_page.css('.r_4')
     else
-      if new_page.css('.r_3')
+      if !new_page.css('.r_3').empty?
         new_page.css('.r_3')
       end
     end
@@ -73,7 +74,7 @@ begin
 
     if temp > highest_count
       highest_count = temp
-      url_of_matched = elem.ancestors[2].css('.song').first['href']
+      url_of_matched = elem.ancestors[2].css('.song').last['href']
     end
 
   end
