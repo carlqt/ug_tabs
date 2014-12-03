@@ -65,6 +65,24 @@ begin
     end
   end
 
+  highest_count = 0
+  highest_rated.each do |elem|
+    temp = elem.ancestors[1].css('.ratdig').text.to_i
+
+    if temp > highest_count
+      highest_count = temp
+      url_of_matched = elem.ancestors[2].css('.song').first['href']
+    end
+
+  end
+
+  tabs_page = Nokogiri::HTML open(url_of_matched, 'User-Agent' => 'chrome')
+
+  tabs = tabs_page.css('.tb_ct pre')[2].to_s
+  File.open("#{song_title.gsub(' ','_')}.txt", 'w') do |file|
+    file.puts Sanitzie.fragment(tabs)
+  end
+
 rescue LoadError => e
   puts "#{e.message} gem not found... Installing"
   load_missing_gem e.message.split.last
