@@ -48,11 +48,6 @@ begin
 
   new_page = Nokogiri::HTML matched_titles.columnize
 
-  # song_match = matched_titles.select do |match|
-
-  # end
-
-
   highest_rated = if !new_page.css('.r_5').empty?
     new_page.css('.r_5')
   else
@@ -91,17 +86,3 @@ rescue LoadError => e
   retry
 end
 
-
-
-# tabs = doc.css('.tb_ct pre')[2].to_s
-
-# File.open("#{ARGV[1]}.txt", 'w') do |file|
-#   file.puts Sanitize.fragment(tabs)
-# end
-
-
-# match criteria
-# 1. if it matches with the title name
-# 2. if it's either a chord or a tab
-# 3. if it's the highest rating
-# 4. if it has the most number of upvotes
