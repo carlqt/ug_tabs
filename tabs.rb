@@ -65,7 +65,9 @@ begin
     end
   end
 
+  # convert this into a while or for loop
   highest_count = 0
+  url_of_matched = ""
   highest_rated.each do |elem|
     temp = elem.ancestors[1].css('.ratdig').text.to_i
 
@@ -80,7 +82,7 @@ begin
 
   tabs = tabs_page.css('.tb_ct pre')[2].to_s
   File.open("#{song_title.gsub(' ','_')}.txt", 'w') do |file|
-    file.puts Sanitzie.fragment(tabs)
+    file.puts Sanitize.fragment(tabs)
   end
 
 rescue LoadError => e
