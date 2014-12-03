@@ -1,6 +1,5 @@
 require 'pry'
 def load_missing_gem(name, version=nil)
-  # needed if your ruby version is less than 1.9
 
   begin
     gem name, version
@@ -87,7 +86,7 @@ begin
   end
 
 rescue LoadError => e
-  puts "#{e.message} gem not found... Installing"
+  puts "#{e.message.split.last} gem not found... Installing"
   load_missing_gem e.message.split.last
   retry
 end
