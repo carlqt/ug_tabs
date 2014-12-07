@@ -31,6 +31,12 @@ class UgTab
     def highest_match_song(matched_titles)
       new_page = Nokogiri::HTML matched_titles.columnize
 
+      highest_rated = match_highest_rated_records(new_page)
+
+
+    end
+
+    def match_highest_rated_records(new_page)
       if !new_page.css('.r_5').empty?
         new_page.css('.r_5')
       else
@@ -42,7 +48,6 @@ class UgTab
           end
         end
       end
-
     end
 
 end
