@@ -7,7 +7,7 @@ def load_missing_gem(name, version=nil)
     version = "--version '#{version}'" unless version.nil?
     system("gem install #{name} #{version}")
     Gem.clear_paths
-    retryi
+    retry
   end
 
   # require name

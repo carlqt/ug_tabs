@@ -65,18 +65,10 @@ class UgTab
       return url_of_matched
     end
 
-    def match_highest_rated_records(new_page)
-      if !new_page.css('.r_5').empty?
-        new_page.css('.r_5')
-      else
-        if !new_page.css('.r_4').empty?
-          new_page.css('.r_4')
-        else
-          if !new_page.css('.r_3').empty?
-            new_page.css('.r_3')
-          end
-        end
-      end
+    def match_highest_rated_records(new_page) 
+      return new_page.css(".r_5") if !new_page.css(".r_5").empty?
+      return new_page.css(".r_4") if !new_page.css(".r_4").empty?
+      return new_page.css(".r_3") if !new_page.css(".r_3").empty?
     end
 
 end
