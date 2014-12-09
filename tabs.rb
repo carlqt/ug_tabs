@@ -1,4 +1,3 @@
-require 'pry'
 def load_missing_gem(name, version=nil)
 
   begin
